@@ -1,0 +1,49 @@
+<div class="lista-itens">
+    @for (item of items(); track item.id) {
+        <app-item 
+            [title]="item.title" 
+            [description]="item.description" 
+            [updatedAt]="item.updatedAt" 
+            (itemSelect)="onSelect(item)" 
+        />
+    } @empty {
+        <p class="empty-message">Nenhum item encontrado.</p>
+    }
+
+    @if (items().length > 0) {
+        <div class="pagination-controls">
+            <div class="page-size-selector">
+                <label for="pageSize">Itens por página:</label>
+                <select 
+                    id="pageSize" 
+                    [ngModel]="pageSize()" 
+                    (ngModelChange)="onPageSizeSelect($event)"
+                >
+                    @for (option of pageSizeOptions; track option) {
+                        <option [value]="option">{{ option }}</option>
+                    }
+                </select>
+            </div>
+
+            <div class="page-buttons">
+                <button 
+                    type="button" 
+                    [disabled]="currentPage() === 1" 
+                    (click)="goToPage(currentPage() - 1)"
+                >
+                    Anterior
+                </button>
+
+                <span>Página {{ currentPage() }} de {{ totalPages() }}</span>
+
+                <button 
+                    type="button" 
+                    [disabled]="currentPage() === totalPages()" 
+                    (click)="goToPage(currentPage() + 1)"
+                >
+                    Próxima
+                </button>
+            </div>
+        </div>
+    }
+</div>

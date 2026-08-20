@@ -1,0 +1,73 @@
+<div 
+    class="modal-backdrop" 
+    (mousedown)="onBackdropMouseDown($event)"
+    (keydown.escape)="onClose()"
+    tabindex="-1"
+>
+    <div 
+        class="modal-card" 
+        role="dialog" 
+        aria-modal="true"
+        aria-labelledby="modal-title"
+    >
+        <div class="modal-header">
+            <h2 id="modal-title">
+                @switch (mode().kind) {
+                    @case ("View") { Detalhes do Item }
+                    @case ("Edit") { Editar Item }
+                    @case ("Create") { Novo Item }
+                }
+            </h2>
+        </div>
+
+        @if (mode().kind === "View") {
+            <div class="view-container">
+                <div class="field">
+                    <span class="field-label">Título</span>
+                    <p class="view-text">{{ title() }}</p>
+                </div>
+
+                <div class="field">
+                    <span class="field-label">Descrição</span>
+                    <p class="view-text description-text">{{ description() || 'Nenhuma descrição informada.' }}</p>
+                </div>
+            </div>
+
+            <div class="actions between">
+                <button type="button" class="button-danger" (click)="onDelete()">Excluir</button>
+                <button type="button" class="button-primary" (click)="enterEditMode()">Editar</button>
+            </div>
+        } @else {
+            <form (ngSubmit)="onSave()">
+                <div class="field">
+                    <label for="title">Título</label>
+                    <input 
+                        id="title" 
+                        type="text" 
+                        [ngModel]="title()" 
+                        (ngModelChange)="title.set($event)" 
+                        name="title" 
+                        placeholder="Digite o título..."
+                        required 
+                    />
+                </div>
+
+                <div class="field">
+                    <label for="description">Descrição</label>
+                    <textarea 
+                        id="description" 
+                        [ngModel]="description()" 
+                        (ngModelChange)="description.set($event)" 
+                        name="description" 
+                        placeholder="Digite a descrição..."
+                        rows="3"
+                    ></textarea>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="button-primary">Salvar</button>
+                </div>
+            </form>
+        }
+    </div>
+</div>

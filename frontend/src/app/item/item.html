@@ -1,0 +1,13 @@
+<button type="button" class="item" (click)="onSelect()">
+    <div class="title" [title]="title()">
+        {{ title() }}
+    </div>
+    
+    <div class="description" [title]="description()">
+        {{ description() }}
+    </div>
+    
+    <div class="last-modified">
+        {{ updatedAt() | date:'dd/MM' }}
+    </div>
+</button>

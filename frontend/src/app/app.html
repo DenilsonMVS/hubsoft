@@ -1,0 +1,33 @@
+<div class="main-container">
+    <div class="header">
+        <h1>Lista de Itens</h1>
+        <button class="primary-button" (click)="openCreateModal()">Adicionar item</button>
+    </div>
+
+    @if (isLoading()) {
+        <div class="loading-spinner">
+            <p>Carregando itens...</p>
+        </div>
+    } @else {
+        <app-item-list 
+            [items]="items()" 
+            [currentPage]="currentPage()" 
+            [totalPages]="totalPages()" 
+            [pageSize]="pageSize()" 
+            (itemSelect)="openEditModal($event)" 
+            (pageChange)="onPageChange($event)" 
+            (pageSizeChange)="onPageSizeChange($event)" 
+        />
+    }
+
+    @if (isModalOpen()) {
+        <app-item-detail 
+            [item]="selectedItem()" 
+            (save)="handleSave($event)" 
+            (deleteItem)="handleDeleteFromModal()"
+            (closeModal)="isModalOpen.set(false)" 
+        />
+    }
+
+    <router-outlet />
+</div>
