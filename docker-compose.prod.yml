@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hubsoft_postgres_prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: laravel_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hubsoft_backend_prod
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: Laravel
+      APP_ENV: production
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: laravel_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: secretpassword
+
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+    command: >
+      sh -c "test -f .env || cp .env.example .env &&
+             php artisan key:generate --force &&
+             php artisan config:cache &&
+             php artisan migrate --force &&
+             php artisan serve --host=0.0.0.0 --port=8000"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata_prod:
+  
